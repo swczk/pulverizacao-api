@@ -7,6 +7,7 @@ import (
 	"pulverizacao-api/models"
 
 	"github.com/graphql-go/graphql"
+	"github.com/graphql-go/graphql/language/ast"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,6 +32,14 @@ var (
 			switch str := value.(type) {
 			case string:
 				t, _ := time.Parse(time.RFC3339, str)
+				return t
+			}
+			return nil
+		},
+		ParseLiteral: func(valueAST ast.Value) interface{} {
+			switch valueAST := valueAST.(type) {
+			case *ast.StringValue:
+				t, _ := time.Parse(time.RFC3339, valueAST.Value)
 				return t
 			}
 			return nil
@@ -208,28 +217,28 @@ func (r *Resolver) GetAplicacao(p graphql.ResolveParams) (interface{}, error) {
 
 	collection := r.db.Collection("aplicacoes")
 	pipeline := mongo.Pipeline{
-		{{Key: "$match", Value: bson.D{{Key: "_id", Value: objectID}}}},
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$match", Value: bson.D{{Key: "_id", Value: objectID}}}},
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "talhoes"},
 			{Key: "localField", Value: "talhao_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "talhao"},
 		}}},
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "equipamentos"},
 			{Key: "localField", Value: "equipamento_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "equipamento"},
 		}}},
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "tipos_aplicacao"},
 			{Key: "localField", Value: "tipo_aplicacao_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "tipo_aplicacao"},
 		}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
 	}
 
 	cursor, err := collection.Aggregate(context.TODO(), pipeline)
@@ -254,29 +263,29 @@ func (r *Resolver) GetAplicacoes(p graphql.ResolveParams) (interface{}, error) {
 
 	collection := r.db.Collection("aplicacoes")
 	pipeline := mongo.Pipeline{
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "talhoes"},
 			{Key: "localField", Value: "talhao_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "talhao"},
 		}}},
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "equipamentos"},
 			{Key: "localField", Value: "equipamento_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "equipamento"},
 		}}},
-		{{Key: "$lookup", Value: bson.D{
+		bson.D{{Key: "$lookup", Value: bson.D{
 			{Key: "from", Value: "tipos_aplicacao"},
 			{Key: "localField", Value: "tipo_aplicacao_id"},
 			{Key: "foreignField", Value: "_id"},
 			{Key: "as", Value: "tipo_aplicacao"},
 		}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		{{Key: "$skip", Value: int64(offset)}},
-		{{Key: "$limit", Value: int64(limit)}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
+		bson.D{{Key: "$skip", Value: int64(offset)}},
+		bson.D{{Key: "$limit", Value: int64(limit)}},
 	}
 
 	cursor, err := collection.Aggregate(context.TODO(), pipeline)
