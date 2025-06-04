@@ -1,0 +1,107 @@
+@localUrl = {{$dotenv localUrl}}
+@host = {{localUrl}}
+
+### Listar todas as aplicações
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { aplicacoes(limit: 5, offset: 0) { id operador dosagem finalizada dataInicio talhao { nome cultura } equipamento { nome modelo } tipoAplicacao { nome tipoProduto } } }"
+}
+
+### Buscar aplicação por ID
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { aplicacao(id: \"507f1f77bcf86cd799439011\") { id operador dosagem dataInicio dataFim condicaoClimatica observacoes finalizada talhao { nome areaHectares cultura } equipamento { nome modelo fabricante } tipoAplicacao { nome descricao vazaoPadrao } } }"
+}
+
+### Criar nova aplicação
+# @name createAplicacao
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createAplicacao(input: { talhaoId: \"507f1f77bcf86cd799439011\" equipamentoId: \"507f1f77bcf86cd799439012\" tipoAplicacaoId: \"507f1f77bcf86cd799439013\" dataInicio: \"2025-05-28T08:30:00Z\" dosagem: 2.5 volumeAplicado: 150.0 operador: \"João Silva\" condicaoClimatica: \"Ensolarado, vento fraco\" observacoes: \"Aplicação de herbicida pós-emergente\" }) { id operador dosagem finalizada createdAt } }"
+}
+
+### Guardar ID da aplicação criada
+@aplicacaoId = {{createAplicacao.response.body.data.createAplicacao.id}}
+
+### Atualizar aplicação (finalizar)
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { updateAplicacao(id: \"{{aplicacaoId}}\" input: { finalizada: true observacoes: \"Aplicação finalizada com sucesso\" volumeAplicado: 145.8 }) { id finalizada dataFim observacoes volumeAplicado updatedAt } }"
+}
+
+### Buscar aplicação atualizada
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { aplicacao(id: \"{{aplicacaoId}}\") { id operador dosagem finalizada dataInicio dataFim observacoes volumeAplicado } }"
+}
+
+### Deletar aplicação
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { deleteAplicacao(id: \"{{aplicacaoId}}\") }"
+}
+
+### Query com fragmentos (reutilização)
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "fragment AplicacaoInfo on Aplicacao { id operador dosagem finalizada dataInicio condicaoClimatica } query { aplicacoes(limit: 3) { ...AplicacaoInfo talhao { nome cultura } } }"
+}
+
+### Query com variáveis
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetAplicacoes($limit: Int, $offset: Int) { aplicacoes(limit: $limit, offset: $offset) { id operador dosagem finalizada talhao { nome } equipamento { nome } } }",
+  "variables": { "limit": 10, "offset": 0 }
+}
+
+### Mutation com variáveis
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreateAplicacao($input: AplicacaoInput!) { createAplicacao(input: $input) { id operador dosagem finalizada createdAt } }",
+  "variables": {
+    "input": {
+      "talhaoId": "507f1f77bcf86cd799439011",
+      "equipamentoId": "507f1f77bcf86cd799439012", 
+      "tipoAplicacaoId": "507f1f77bcf86cd799439013",
+      "dataInicio": "2025-05-28T14:00:00Z",
+      "dosagem": 3.0,
+      "operador": "Maria Santos",
+      "condicaoClimatica": "Nublado",
+      "observacoes": "Aplicação de fungicida"
+    }
+  }
+}
+
+### Schema introspection (para ver tipos disponíveis)
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { __schema { types { name fields { name type { name } } } } }"
+}
+
+### Query para debugging (com alias)
+POST {{host}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { finalizadas: aplicacoes(limit: 5) { id operador finalizada } primeiras: aplicacoes(limit: 3, offset: 0) { id operador dataInicio } }"
+}
