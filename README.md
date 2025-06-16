@@ -1,296 +1,244 @@
-# API GraphQL - Sistema de Pulverização
+# API GraphQL - Dados Geográficos
 
-API GraphQL desenvolvida em Go com MongoDB para gerenciamento de aplicações de pulverização agrícola.
+API GraphQL desenvolvida em Go com MongoDB para gerenciamento exclusivo de dados geográficos de aplicações de pulverização agrícola.
+
+## Arquitetura do Sistema
+
+Esta API faz parte de um sistema maior onde:
+- **Spring Boot API (porta 8080)**: Gerencia CRUD de equipamentos, talhões, aplicações, etc.
+- **GraphQL API (porta 8081)**: Gerencia EXCLUSIVAMENTE dados geográficos
 
 ## Estrutura do Projeto
 
 ```
-pulverizacao-api/
+backend-graphql/
 ├── main.go
 ├── go.mod 
 ├── Dockerfile
-├── docker-compose.yml
 ├── Makefile
 ├── config/
 │   └── config.go
 ├── database/
 │   └── connection.go
 ├── models/
-│   └── aplicacao.go
+│   └── geo.go
 ├── graphql/
 │   └── schema.go
-└── scripts/
-    └── init-mongo.js
+├── scripts/
+│   └── init-mongo.js
+└── test/
+    └── geo.http
 ```
 
-## 🚀 Quick Start com Docker
+## 🚀 Quick Start
 
-### Opção 1: Docker Compose (Recomendado para desenvolvimento)
+### Docker Compose (no projeto principal)
+
+A API GraphQL é executada como parte do sistema completo:
 
 ```bash
-# Clone o repositório
-git clone <repo-url>
-cd pulveriza-nenem
-
-# Execute o script de desenvolvimento
-./scripts/start-dev.sh
-
-# Ou manualmente
+# No diretório raiz do projeto
 docker compose -f compose.dev.yaml up -d
-
-# Verifique o status
-docker compose -f compose.dev.yaml ps
 ```
 
 Serviços disponíveis:
 - **API GraphQL**: http://localhost:8081/graphql
+- **Spring Boot API**: http://localhost:8080
 - **MongoDB**: localhost:27017
-- **Mongo Express**: http://localhost:8083 (admin/pass)
 
-### Opção 2: Docker Hub
-
-```bash
-# Baixe e execute a imagem
-docker run -p 8080:8080 \
-  -e MONGO_URI="your-mongodb-uri" \
-  -e DATABASE_NAME="pulverizacao" \
-  your-dockerhub-username/pulverizacao-api:latest
-```
-
-## 📦 Instalação Local
-
-1. Configure MongoDB Atlas:
-   - Crie cluster no MongoDB Atlas
-   - Configure usuário e senha
-   - Adicione IP à whitelist
-   - Obtenha connection string
-2. Instale dependências:
-   ```bash
-   go mod tidy
-   ```
-3. Configure variáveis no `.env`:
-   ```
-   MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
-   DATABASE_NAME=pulverizacao
-   PORT=8080
-   ```
-4. Execute:
-   ```bash
-   go run main.go
-   ```
-
-## 🛠️ Comandos Make
-
-```bash
-# Desenvolvimento
-make dev          # Executar localmente
-make test         # Executar testes
-make build        # Build da aplicação
-
-# Docker
-make docker-build # Build da imagem Docker
-make docker-run   # Executar container
-make docker-push  # Push para registry
-
-# Docker Compose
-make up           # Iniciar serviços
-make down         # Parar serviços
-make logs         # Ver logs
-make rebuild      # Rebuild completo
-
-# Utilitários
-make status       # Status dos serviços
-make health       # Verificar saúde
-make cleanup      # Limpeza
-```
-
-## ## 🚀 CI/CD e Deploy
-
-### GitHub Actions
-
-O projeto inclui pipeline automático de CI/CD:
-
-1. **Configurar secrets no GitHub:**
-   - `DOCKER_USERNAME`: seu username do Docker Hub
-   - `DOCKER_PASSWORD`: token de acesso do Docker Hub
-
-2. **Pipeline automático:**
-   - Testes automatizados
-   - Build multi-arquitetura (amd64/arm64)
-   - Push para Docker Hub em push para `main`
-   - Tags automáticas baseadas em versões
-
-3. **Comandos para release:**
-   ```bash
-   # Tag de versão
-   git tag v1.0.0
-   git push origin v1.0.0
-   
-   # Será criada automaticamente:
-   # - your-username/pulverizacao-api:v1.0.0
-   # - your-username/pulverizacao-api:1.0
-   # - your-username/pulverizacao-api:latest
-   ```
-
-### Deploy em Produção
-
-**Opção 1: Docker Compose**
-```bash
-# Servidor de produção  
-docker compose -f compose.prod.yaml up -d
-```
-
-**Opção 2: Kubernetes**
-```bash
-# Usando imagem do Docker Hub
-kubectl create deployment pulverizacao-api \
-  --image=your-username/pulverizacao-api:latest
-kubectl expose deployment pulverizacao-api \
-  --port=8080 --target-port=8080
-```
-
-**Opção 3: Cloud Services**
-- AWS ECS/Fargate
-- Google Cloud Run
-- Azure Container Instances
-
-## 📊 Uso
+## 📊 Uso da API GraphQL
 
 Acesse GraphiQL em: `http://localhost:8081/graphql`
 
-### Queries
+### Operações Disponíveis
 
-**Buscar todas as aplicações:**
+#### Queries
+
+**Buscar trajetória geográfica por ID da aplicação:**
 ```graphql
 query {
-  aplicacoes(limit: 10, offset: 0) {
-    id
-    operador
-    dosagem
-    finalizada
-    talhao {
-      nome
-      cultura
+  geoTrajetoria(aplicacaoId: "507f1f77bcf86cd799439011") {
+    aplicacaoId
+    pontoInicial {
+      latitude
+      longitude
+      timestamp
+      altitude
+      speed
+      accuracy
     }
-    equipamento {
-      nome
-      modelo
+    pontoFinal {
+      latitude
+      longitude
+      timestamp
+      altitude
+      speed
+      accuracy
     }
+    trajetoria {
+      latitude
+      longitude
+      timestamp
+      altitude
+      speed
+      accuracy
+    }
+    areaCobertura
+    distanciaPercorrida
+    createdAt
+    updatedAt
   }
 }
 ```
 
-**Buscar aplicação por ID:**
+**Buscar todas as trajetórias com paginação:**
 ```graphql
 query {
-  aplicacao(id: "507f1f77bcf86cd799439011") {
-    id
-    operador
-    dosagem
-    dataInicio
-    condicaoClimatica
-    observacoes
-    finalizada
+  geoTrajetorias(limit: 10, offset: 0) {
+    aplicacaoId
+    pontoInicial {
+      latitude
+      longitude
+      timestamp
+    }
+    pontoFinal {
+      latitude
+      longitude
+      timestamp
+    }
+    areaCobertura
+    distanciaPercorrida
+    createdAt
   }
 }
 ```
 
-### Mutations
+#### Mutations
 
-**Criar aplicação:**
+**Criar trajetória geográfica:**
 ```graphql
 mutation {
-  createAplicacao(input: {
-    talhaoId: "507f1f77bcf86cd799439011"
-    equipamentoId: "507f1f77bcf86cd799439012"
-    tipoAplicacaoId: "507f1f77bcf86cd799439013"
-    dataInicio: "2025-05-28T10:00:00Z"
-    dosagem: 2.5
-    operador: "João Silva"
-    condicaoClimatica: "Ensolarado"
-    observacoes: "Aplicação normal"
+  createGeoTrajetoria(input: {
+    aplicacaoId: "507f1f77bcf86cd799439011"
+    pontoInicial: {
+      latitude: -25.4284
+      longitude: -49.2733
+      timestamp: "2025-06-16T06:00:00Z"
+      accuracy: 3.5
+      altitude: 945.2
+      speed: 0.0
+    }
+    pontoFinal: {
+      latitude: -25.4310
+      longitude: -49.2690
+      timestamp: "2025-06-16T07:45:00Z"
+      accuracy: 4.1
+      altitude: 952.8
+      speed: 12.5
+    }
+    trajetoria: [
+      {
+        latitude: -25.4284
+        longitude: -49.2733
+        timestamp: "2025-06-16T06:00:00Z"
+        accuracy: 3.5
+        altitude: 945.2
+        speed: 0.0
+      }
+    ]
+    areaCobertura: 5.2
+    distanciaPercorrida: 850.5
   }) {
-    id
-    operador
-    dosagem
-    finalizada
+    aplicacaoId
+    areaCobertura
+    distanciaPercorrida
   }
 }
 ```
 
-**Atualizar aplicação:**
+**Atualizar trajetória geográfica:**
 ```graphql
 mutation {
-  updateAplicacao(
-    id: "507f1f77bcf86cd799439011"
+  updateGeoTrajetoria(
+    aplicacaoId: "507f1f77bcf86cd799439011"
     input: {
-      finalizada: true
-      observacoes: "Aplicação finalizada"
+      pontoFinal: {
+        latitude: -25.4315
+        longitude: -49.2685
+        timestamp: "2025-06-16T08:00:00Z"
+        accuracy: 3.8
+        altitude: 955.0
+        speed: 8.2
+      }
+      novosPontos: [
+        {
+          latitude: -25.4312
+          longitude: -49.2687
+          timestamp: "2025-06-16T07:50:00Z"
+          accuracy: 3.9
+          altitude: 953.5
+          speed: 10.1
+        }
+      ]
+      areaCobertura: 6.1
+      distanciaPercorrida: 920.8
     }
   ) {
-    id
-    finalizada
-    dataFim
-    observacoes
+    aplicacaoId
+    areaCobertura
+    distanciaPercorrida
+    updatedAt
   }
 }
 ```
 
-**Deletar aplicação:**
+**Deletar trajetória geográfica:**
 ```graphql
 mutation {
-  deleteAplicacao(id: "507f1f77bcf86cd799439011")
+  deleteGeoTrajetoria(aplicacaoId: "507f1f77bcf86cd799439011")
 }
 ```
 
-## Modelos
+## Modelos de Dados
 
-### Aplicacao
-- `id`: ID único
-- `talhaoId`: Referência ao talhão
-- `equipamentoId`: Referência ao equipamento  
-- `tipoAplicacaoId`: Referência ao tipo de aplicação
-- `dataInicio`: Data/hora de início
-- `dataFim`: Data/hora de fim (opcional)
-- `dosagem`: Dosagem aplicada
-- `volumeAplicado`: Volume aplicado (opcional)
-- `operador`: Nome do operador
-- `condicaoClimatica`: Condições climáticas
-- `observacoes`: Observações gerais
-- `finalizada`: Status da aplicação
+### GeoPoint
+- `latitude`: Latitude do ponto
+- `longitude`: Longitude do ponto
+- `timestamp`: Timestamp do ponto
+- `altitude`: Altitude (opcional)
+- `speed`: Velocidade (opcional)
+- `accuracy`: Precisão GPS (opcional)
 
-### Relacionamentos
-- `talhao`: Dados do talhão (via lookup)
-- `equipamento`: Dados do equipamento (via lookup)
-- `tipoAplicacao`: Dados do tipo de aplicação (via lookup)
+### GeoTrajetoria
+- `aplicacaoId`: ID da aplicação (referência para Spring Boot API)
+- `pontoInicial`: Ponto inicial da trajetória
+- `pontoFinal`: Ponto final da trajetória (opcional)
+- `trajetoria`: Array de pontos da trajetória
+- `areaCobertura`: Área coberta em hectares
+- `distanciaPercorrida`: Distância total percorrida em metros
+- `createdAt`: Data de criação
+- `updatedAt`: Data de atualização
+
+## Collections MongoDB
+
+- `geo_trajetorias`: Trajetórias geográficas das aplicações
 
 ## Configuração
 
-### MongoDB Atlas
-1. Crie um cluster no MongoDB Atlas
-2. Configure usuário de banco de dados em Security > Database Access
-3. Adicione IP à whitelist em Security > Network Access
-4. Obtenha connection string em Connect > Connect your application
-
-### Variáveis de Ambiente (.env)
+### Variáveis de Ambiente
 ```bash
-# MongoDB Atlas connection string
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
-
-# Database name
+MONGO_URI=mongodb://localhost:27017
 DATABASE_NAME=pulverizacao
-
-# Server port
 PORT=8080
 ```
 
-**Exemplo real:**
-```bash
-MONGO_URI=mongodb+srv://myuser:mypass123@cluster0.abc12.mongodb.net/?retryWrites=true&w=majority
-```
+## Testes
 
-### Collections MongoDB
-- `aplicacoes`: Aplicações de pulverização
-- `talhoes`: Talhões/terrenos
-- `equipamentos`: Equipamentos de pulverização
-- `tipos_aplicacao`: Tipos de aplicação
+Use os arquivos `.http` na pasta `test/` para testar as operações:
+
+```bash
+# Teste todas as operações geográficas
+curl -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -d @test/geo.http
+```

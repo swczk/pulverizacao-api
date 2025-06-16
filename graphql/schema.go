@@ -46,102 +46,63 @@ var (
 		},
 	})
 
-	talhaoType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "Talhao",
+	geoPointType = graphql.NewObject(graphql.ObjectConfig{
+		Name: "GeoPoint",
 		Fields: graphql.Fields{
-			"id":                     &graphql.Field{Type: graphql.String},
-			"nome":                   &graphql.Field{Type: graphql.String},
-			"areaHectares":           &graphql.Field{Type: graphql.Float},
-			"cultura":                &graphql.Field{Type: graphql.String},
-			"variedade":              &graphql.Field{Type: graphql.String},
-			"coordenadasGeograficas": &graphql.Field{Type: graphql.String},
-			"createdAt":              &graphql.Field{Type: dateTimeType},
-			"updatedAt":              &graphql.Field{Type: dateTimeType},
+			"latitude":  &graphql.Field{Type: graphql.Float},
+			"longitude": &graphql.Field{Type: graphql.Float},
+			"timestamp": &graphql.Field{Type: dateTimeType},
+			"altitude":  &graphql.Field{Type: graphql.Float},
+			"speed":     &graphql.Field{Type: graphql.Float},
+			"accuracy":  &graphql.Field{Type: graphql.Float},
 		},
 	})
 
-	equipamentoType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "Equipamento",
+	geoTrajetoriaType = graphql.NewObject(graphql.ObjectConfig{
+		Name: "GeoTrajetoria",
 		Fields: graphql.Fields{
-			"id":               &graphql.Field{Type: graphql.String},
-			"nome":             &graphql.Field{Type: graphql.String},
-			"modelo":           &graphql.Field{Type: graphql.String},
-			"fabricante":       &graphql.Field{Type: graphql.String},
-			"anoFabricacao":    &graphql.Field{Type: graphql.Int},
-			"larguraBarra":     &graphql.Field{Type: graphql.Float},
-			"capacidadeTanque": &graphql.Field{Type: graphql.Float},
-			"numeroSerie":      &graphql.Field{Type: graphql.String},
-			"createdAt":        &graphql.Field{Type: dateTimeType},
-			"updatedAt":        &graphql.Field{Type: dateTimeType},
+			"aplicacaoId":         &graphql.Field{Type: graphql.String},
+			"pontoInicial":        &graphql.Field{Type: geoPointType},
+			"pontoFinal":          &graphql.Field{Type: geoPointType},
+			"trajetoria":          &graphql.Field{Type: graphql.NewList(geoPointType)},
+			"areaCobertura":       &graphql.Field{Type: graphql.Float},
+			"distanciaPercorrida": &graphql.Field{Type: graphql.Float},
+			"createdAt":           &graphql.Field{Type: dateTimeType},
+			"updatedAt":           &graphql.Field{Type: dateTimeType},
 		},
 	})
 
-	tipoAplicacaoType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "TipoAplicacao",
-		Fields: graphql.Fields{
-			"id":            &graphql.Field{Type: graphql.String},
-			"nome":          &graphql.Field{Type: graphql.String},
-			"descricao":     &graphql.Field{Type: graphql.String},
-			"vazaoPadrao":   &graphql.Field{Type: graphql.Float},
-			"tipoProduto":   &graphql.Field{Type: graphql.String},
-			"unidadeMedida": &graphql.Field{Type: graphql.String},
-			"createdAt":     &graphql.Field{Type: dateTimeType},
-			"updatedAt":     &graphql.Field{Type: dateTimeType},
-		},
-	})
-
-	aplicacaoType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "Aplicacao",
-		Fields: graphql.Fields{
-			"id":                &graphql.Field{Type: graphql.String},
-			"talhaoId":          &graphql.Field{Type: graphql.String},
-			"equipamentoId":     &graphql.Field{Type: graphql.String},
-			"tipoAplicacaoId":   &graphql.Field{Type: graphql.String},
-			"dataInicio":        &graphql.Field{Type: dateTimeType},
-			"dataFim":           &graphql.Field{Type: dateTimeType},
-			"dosagem":           &graphql.Field{Type: graphql.Float},
-			"volumeAplicado":    &graphql.Field{Type: graphql.Float},
-			"operador":          &graphql.Field{Type: graphql.String},
-			"condicaoClimatica": &graphql.Field{Type: graphql.String},
-			"observacoes":       &graphql.Field{Type: graphql.String},
-			"finalizada":        &graphql.Field{Type: graphql.Boolean},
-			"createdAt":         &graphql.Field{Type: dateTimeType},
-			"updatedAt":         &graphql.Field{Type: dateTimeType},
-			"talhao":            &graphql.Field{Type: talhaoType},
-			"equipamento":       &graphql.Field{Type: equipamentoType},
-			"tipoAplicacao":     &graphql.Field{Type: tipoAplicacaoType},
-		},
-	})
-
-	aplicacaoInputType = graphql.NewInputObject(graphql.InputObjectConfig{
-		Name: "AplicacaoInput",
+	geoPointInputType = graphql.NewInputObject(graphql.InputObjectConfig{
+		Name: "GeoPointInput",
 		Fields: graphql.InputObjectConfigFieldMap{
-			"talhaoId":          &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
-			"equipamentoId":     &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
-			"tipoAplicacaoId":   &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
-			"dataInicio":        &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(dateTimeType)},
-			"dosagem":           &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.Float)},
-			"volumeAplicado":    &graphql.InputObjectFieldConfig{Type: graphql.Float},
-			"operador":          &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
-			"condicaoClimatica": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
-			"observacoes":       &graphql.InputObjectFieldConfig{Type: graphql.String},
+			"latitude":  &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.Float)},
+			"longitude": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.Float)},
+			"timestamp": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(dateTimeType)},
+			"altitude":  &graphql.InputObjectFieldConfig{Type: graphql.Float},
+			"speed":     &graphql.InputObjectFieldConfig{Type: graphql.Float},
+			"accuracy":  &graphql.InputObjectFieldConfig{Type: graphql.Float},
 		},
 	})
 
-	aplicacaoUpdateInputType = graphql.NewInputObject(graphql.InputObjectConfig{
-		Name: "AplicacaoUpdateInput",
+	geoTrajetoriaInputType = graphql.NewInputObject(graphql.InputObjectConfig{
+		Name: "GeoTrajetoriaInput",
 		Fields: graphql.InputObjectConfigFieldMap{
-			"talhaoId":          &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"equipamentoId":     &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"tipoAplicacaoId":   &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"dataInicio":        &graphql.InputObjectFieldConfig{Type: dateTimeType},
-			"dataFim":           &graphql.InputObjectFieldConfig{Type: dateTimeType},
-			"dosagem":           &graphql.InputObjectFieldConfig{Type: graphql.Float},
-			"volumeAplicado":    &graphql.InputObjectFieldConfig{Type: graphql.Float},
-			"operador":          &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"condicaoClimatica": &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"observacoes":       &graphql.InputObjectFieldConfig{Type: graphql.String},
-			"finalizada":        &graphql.InputObjectFieldConfig{Type: graphql.Boolean},
+			"aplicacaoId":         &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
+			"pontoInicial":        &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(geoPointInputType)},
+			"pontoFinal":          &graphql.InputObjectFieldConfig{Type: geoPointInputType},
+			"trajetoria":          &graphql.InputObjectFieldConfig{Type: graphql.NewList(geoPointInputType)},
+			"areaCobertura":       &graphql.InputObjectFieldConfig{Type: graphql.Float},
+			"distanciaPercorrida": &graphql.InputObjectFieldConfig{Type: graphql.Float},
+		},
+	})
+
+	geoTrajetoriaUpdateInputType = graphql.NewInputObject(graphql.InputObjectConfig{
+		Name: "GeoTrajetoriaUpdateInput",
+		Fields: graphql.InputObjectConfigFieldMap{
+			"pontoFinal":          &graphql.InputObjectFieldConfig{Type: geoPointInputType},
+			"novosPontos":         &graphql.InputObjectFieldConfig{Type: graphql.NewList(geoPointInputType)},
+			"areaCobertura":       &graphql.InputObjectFieldConfig{Type: graphql.Float},
+			"distanciaPercorrida": &graphql.InputObjectFieldConfig{Type: graphql.Float},
 		},
 	})
 )
@@ -152,20 +113,20 @@ func CreateSchema(db *mongo.Database) (graphql.Schema, error) {
 	queryType := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
-			"aplicacao": &graphql.Field{
-				Type: aplicacaoType,
+			"geoTrajetoria": &graphql.Field{
+				Type: geoTrajetoriaType,
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"aplicacaoId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 				},
-				Resolve: resolver.GetAplicacao,
+				Resolve: resolver.GetGeoTrajetoria,
 			},
-			"aplicacoes": &graphql.Field{
-				Type: graphql.NewList(aplicacaoType),
+			"geoTrajetorias": &graphql.Field{
+				Type: graphql.NewList(geoTrajetoriaType),
 				Args: graphql.FieldConfigArgument{
 					"limit":  &graphql.ArgumentConfig{Type: graphql.Int, DefaultValue: 10},
 					"offset": &graphql.ArgumentConfig{Type: graphql.Int, DefaultValue: 0},
 				},
-				Resolve: resolver.GetAplicacoes,
+				Resolve: resolver.GetGeoTrajetorias,
 			},
 		},
 	})
@@ -173,27 +134,27 @@ func CreateSchema(db *mongo.Database) (graphql.Schema, error) {
 	mutationType := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Mutation",
 		Fields: graphql.Fields{
-			"createAplicacao": &graphql.Field{
-				Type: aplicacaoType,
+			"createGeoTrajetoria": &graphql.Field{
+				Type: geoTrajetoriaType,
 				Args: graphql.FieldConfigArgument{
-					"input": &graphql.ArgumentConfig{Type: graphql.NewNonNull(aplicacaoInputType)},
+					"input": &graphql.ArgumentConfig{Type: graphql.NewNonNull(geoTrajetoriaInputType)},
 				},
-				Resolve: resolver.CreateAplicacao,
+				Resolve: resolver.CreateGeoTrajetoria,
 			},
-			"updateAplicacao": &graphql.Field{
-				Type: aplicacaoType,
+			"updateGeoTrajetoria": &graphql.Field{
+				Type: geoTrajetoriaType,
 				Args: graphql.FieldConfigArgument{
-					"id":    &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
-					"input": &graphql.ArgumentConfig{Type: graphql.NewNonNull(aplicacaoUpdateInputType)},
+					"aplicacaoId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"input":       &graphql.ArgumentConfig{Type: graphql.NewNonNull(geoTrajetoriaUpdateInputType)},
 				},
-				Resolve: resolver.UpdateAplicacao,
+				Resolve: resolver.UpdateGeoTrajetoria,
 			},
-			"deleteAplicacao": &graphql.Field{
+			"deleteGeoTrajetoria": &graphql.Field{
 				Type: graphql.Boolean,
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"aplicacaoId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 				},
-				Resolve: resolver.DeleteAplicacao,
+				Resolve: resolver.DeleteGeoTrajetoria,
 			},
 		},
 	})
@@ -208,84 +169,37 @@ type Resolver struct {
 	db *mongo.Database
 }
 
-func (r *Resolver) GetAplicacao(p graphql.ResolveParams) (interface{}, error) {
-	id := p.Args["id"].(string)
-	objectID, err := primitive.ObjectIDFromHex(id)
+func (r *Resolver) GetGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
+	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
+	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	collection := r.db.Collection("aplicacoes")
-	pipeline := mongo.Pipeline{
-		bson.D{{Key: "$match", Value: bson.D{{Key: "_id", Value: objectID}}}},
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "talhoes"},
-			{Key: "localField", Value: "talhao_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "talhao"},
-		}}},
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "equipamentos"},
-			{Key: "localField", Value: "equipamento_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "equipamento"},
-		}}},
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "tipos_aplicacao"},
-			{Key: "localField", Value: "tipo_aplicacao_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "tipo_aplicacao"},
-		}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-	}
+	collection := r.db.Collection("geo_trajetorias")
+	filter := bson.M{"aplicacao_id": aplicacaoID}
 
-	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	var geoTrajetoria models.GeoTrajetoria
+	err = collection.FindOne(context.TODO(), filter).Decode(&geoTrajetoria)
 	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.TODO())
-
-	var aplicacao models.Aplicacao
-	if cursor.Next(context.TODO()) {
-		if err := cursor.Decode(&aplicacao); err != nil {
-			return nil, err
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
 		}
+		return nil, err
 	}
 
-	return aplicacao, nil
+	return geoTrajetoria, nil
 }
 
-func (r *Resolver) GetAplicacoes(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) GetGeoTrajetorias(p graphql.ResolveParams) (interface{}, error) {
 	limit := p.Args["limit"].(int)
 	offset := p.Args["offset"].(int)
 
-	collection := r.db.Collection("aplicacoes")
+	collection := r.db.Collection("geo_trajetorias")
 	pipeline := mongo.Pipeline{
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "talhoes"},
-			{Key: "localField", Value: "talhao_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "talhao"},
-		}}},
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "equipamentos"},
-			{Key: "localField", Value: "equipamento_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "equipamento"},
-		}}},
-		bson.D{{Key: "$lookup", Value: bson.D{
-			{Key: "from", Value: "tipos_aplicacao"},
-			{Key: "localField", Value: "tipo_aplicacao_id"},
-			{Key: "foreignField", Value: "_id"},
-			{Key: "as", Value: "tipo_aplicacao"},
-		}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$talhao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$equipamento"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
-		bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$tipo_aplicacao"}, {Key: "preserveNullAndEmptyArrays", Value: true}}}},
 		bson.D{{Key: "$skip", Value: int64(offset)}},
 		bson.D{{Key: "$limit", Value: int64(limit)}},
+		bson.D{{Key: "$sort", Value: bson.D{{Key: "created_at", Value: -1}}}},
 	}
 
 	cursor, err := collection.Aggregate(context.TODO(), pipeline)
@@ -294,119 +208,189 @@ func (r *Resolver) GetAplicacoes(p graphql.ResolveParams) (interface{}, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	var aplicacoes []models.Aplicacao
-	if err = cursor.All(context.TODO(), &aplicacoes); err != nil {
+	var geoTrajetorias []models.GeoTrajetoria
+	if err = cursor.All(context.TODO(), &geoTrajetorias); err != nil {
 		return nil, err
 	}
 
-	return aplicacoes, nil
+	return geoTrajetorias, nil
 }
 
-func (r *Resolver) CreateAplicacao(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) CreateGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
 	input := p.Args["input"].(map[string]interface{})
 
-	talhaoID, _ := primitive.ObjectIDFromHex(input["talhaoId"].(string))
-	equipamentoID, _ := primitive.ObjectIDFromHex(input["equipamentoId"].(string))
-	tipoAplicacaoID, _ := primitive.ObjectIDFromHex(input["tipoAplicacaoId"].(string))
-
-	aplicacao := models.Aplicacao{
-		TalhaoID:          talhaoID,
-		EquipamentoID:     equipamentoID,
-		TipoAplicacaoID:   tipoAplicacaoID,
-		DataInicio:        input["dataInicio"].(time.Time),
-		Dosagem:           input["dosagem"].(float64),
-		Operador:          input["operador"].(string),
-		CondicaoClimatica: input["condicaoClimatica"].(string),
-		Observacoes:       input["observacoes"].(string),
-		Finalizada:        false,
-		CreatedAt:         time.Now(),
-		UpdatedAt:         time.Now(),
-	}
-
-	if volumeAplicado, ok := input["volumeAplicado"].(float64); ok {
-		aplicacao.VolumeAplicado = &volumeAplicado
-	}
-
-	collection := r.db.Collection("aplicacoes")
-	result, err := collection.InsertOne(context.TODO(), aplicacao)
+	aplicacaoID, err := primitive.ObjectIDFromHex(input["aplicacaoId"].(string))
 	if err != nil {
 		return nil, err
 	}
 
-	aplicacao.ID = result.InsertedID.(primitive.ObjectID)
-	return aplicacao, nil
+	// Processar ponto inicial
+	pontoInicialInput := input["pontoInicial"].(map[string]interface{})
+	pontoInicial := models.GeoPoint{
+		Latitude:  pontoInicialInput["latitude"].(float64),
+		Longitude: pontoInicialInput["longitude"].(float64),
+		Timestamp: pontoInicialInput["timestamp"].(time.Time),
+	}
+
+	if altitude, ok := pontoInicialInput["altitude"].(float64); ok {
+		pontoInicial.Altitude = &altitude
+	}
+	if speed, ok := pontoInicialInput["speed"].(float64); ok {
+		pontoInicial.Speed = &speed
+	}
+	if accuracy, ok := pontoInicialInput["accuracy"].(float64); ok {
+		pontoInicial.Accuracy = &accuracy
+	}
+
+	geoTrajetoria := models.GeoTrajetoria{
+		AplicacaoID:  aplicacaoID,
+		PontoInicial: pontoInicial,
+		Trajetoria:   []models.GeoPoint{},
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+	}
+
+	// Processar ponto final se fornecido
+	if pontoFinalInput, ok := input["pontoFinal"].(map[string]interface{}); ok {
+		pontoFinal := models.GeoPoint{
+			Latitude:  pontoFinalInput["latitude"].(float64),
+			Longitude: pontoFinalInput["longitude"].(float64),
+			Timestamp: pontoFinalInput["timestamp"].(time.Time),
+		}
+		if altitude, ok := pontoFinalInput["altitude"].(float64); ok {
+			pontoFinal.Altitude = &altitude
+		}
+		if speed, ok := pontoFinalInput["speed"].(float64); ok {
+			pontoFinal.Speed = &speed
+		}
+		if accuracy, ok := pontoFinalInput["accuracy"].(float64); ok {
+			pontoFinal.Accuracy = &accuracy
+		}
+		geoTrajetoria.PontoFinal = &pontoFinal
+	}
+
+	// Processar trajetória se fornecida
+	if trajetoriaInput, ok := input["trajetoria"].([]interface{}); ok {
+		for _, pontoInterface := range trajetoriaInput {
+			pontoInput := pontoInterface.(map[string]interface{})
+			ponto := models.GeoPoint{
+				Latitude:  pontoInput["latitude"].(float64),
+				Longitude: pontoInput["longitude"].(float64),
+				Timestamp: pontoInput["timestamp"].(time.Time),
+			}
+			if altitude, ok := pontoInput["altitude"].(float64); ok {
+				ponto.Altitude = &altitude
+			}
+			if speed, ok := pontoInput["speed"].(float64); ok {
+				ponto.Speed = &speed
+			}
+			if accuracy, ok := pontoInput["accuracy"].(float64); ok {
+				ponto.Accuracy = &accuracy
+			}
+			geoTrajetoria.Trajetoria = append(geoTrajetoria.Trajetoria, ponto)
+		}
+	}
+
+	// Área de cobertura e distância percorrida
+	if areaCobertura, ok := input["areaCobertura"].(float64); ok {
+		geoTrajetoria.AreaCobertura = areaCobertura
+	}
+	if distanciaPercorrida, ok := input["distanciaPercorrida"].(float64); ok {
+		geoTrajetoria.DistanciaPercorrida = distanciaPercorrida
+	}
+
+	collection := r.db.Collection("geo_trajetorias")
+	_, err = collection.InsertOne(context.TODO(), geoTrajetoria)
+	if err != nil {
+		return nil, err
+	}
+
+	return geoTrajetoria, nil
 }
 
-func (r *Resolver) UpdateAplicacao(p graphql.ResolveParams) (interface{}, error) {
-	id := p.Args["id"].(string)
+func (r *Resolver) UpdateGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
+	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
 	input := p.Args["input"].(map[string]interface{})
 
-	objectID, err := primitive.ObjectIDFromHex(id)
+	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return nil, err
 	}
 
 	update := bson.M{"$set": bson.M{"updated_at": time.Now()}}
 
-	if talhaoID, ok := input["talhaoId"].(string); ok {
-		oid, _ := primitive.ObjectIDFromHex(talhaoID)
-		update["$set"].(bson.M)["talhao_id"] = oid
-	}
-	if equipamentoID, ok := input["equipamentoId"].(string); ok {
-		oid, _ := primitive.ObjectIDFromHex(equipamentoID)
-		update["$set"].(bson.M)["equipamento_id"] = oid
-	}
-	if tipoAplicacaoID, ok := input["tipoAplicacaoId"].(string); ok {
-		oid, _ := primitive.ObjectIDFromHex(tipoAplicacaoID)
-		update["$set"].(bson.M)["tipo_aplicacao_id"] = oid
-	}
-	if dataInicio, ok := input["dataInicio"].(time.Time); ok {
-		update["$set"].(bson.M)["data_inicio"] = dataInicio
-	}
-	if dataFim, ok := input["dataFim"].(time.Time); ok {
-		update["$set"].(bson.M)["data_fim"] = dataFim
-	}
-	if dosagem, ok := input["dosagem"].(float64); ok {
-		update["$set"].(bson.M)["dosagem"] = dosagem
-	}
-	if volumeAplicado, ok := input["volumeAplicado"].(float64); ok {
-		update["$set"].(bson.M)["volume_aplicado"] = volumeAplicado
-	}
-	if operador, ok := input["operador"].(string); ok {
-		update["$set"].(bson.M)["operador"] = operador
-	}
-	if condicaoClimatica, ok := input["condicaoClimatica"].(string); ok {
-		update["$set"].(bson.M)["condicao_climatica"] = condicaoClimatica
-	}
-	if observacoes, ok := input["observacoes"].(string); ok {
-		update["$set"].(bson.M)["observacoes"] = observacoes
-	}
-	if finalizada, ok := input["finalizada"].(bool); ok {
-		update["$set"].(bson.M)["finalizada"] = finalizada
-		if finalizada {
-			update["$set"].(bson.M)["data_fim"] = time.Now()
+	// Atualizar ponto final se fornecido
+	if pontoFinalInput, ok := input["pontoFinal"].(map[string]interface{}); ok {
+		pontoFinal := models.GeoPoint{
+			Latitude:  pontoFinalInput["latitude"].(float64),
+			Longitude: pontoFinalInput["longitude"].(float64),
+			Timestamp: pontoFinalInput["timestamp"].(time.Time),
 		}
+		if altitude, ok := pontoFinalInput["altitude"].(float64); ok {
+			pontoFinal.Altitude = &altitude
+		}
+		if speed, ok := pontoFinalInput["speed"].(float64); ok {
+			pontoFinal.Speed = &speed
+		}
+		if accuracy, ok := pontoFinalInput["accuracy"].(float64); ok {
+			pontoFinal.Accuracy = &accuracy
+		}
+		update["$set"].(bson.M)["ponto_final"] = pontoFinal
 	}
 
-	collection := r.db.Collection("aplicacoes")
-	_, err = collection.UpdateOne(context.TODO(), bson.M{"_id": objectID}, update)
+	// Adicionar novos pontos à trajetória se fornecidos
+	if novosPontosInput, ok := input["novosPontos"].([]interface{}); ok {
+		var novosPontos []models.GeoPoint
+		for _, pontoInterface := range novosPontosInput {
+			pontoInput := pontoInterface.(map[string]interface{})
+			ponto := models.GeoPoint{
+				Latitude:  pontoInput["latitude"].(float64),
+				Longitude: pontoInput["longitude"].(float64),
+				Timestamp: pontoInput["timestamp"].(time.Time),
+			}
+			if altitude, ok := pontoInput["altitude"].(float64); ok {
+				ponto.Altitude = &altitude
+			}
+			if speed, ok := pontoInput["speed"].(float64); ok {
+				ponto.Speed = &speed
+			}
+			if accuracy, ok := pontoInput["accuracy"].(float64); ok {
+				ponto.Accuracy = &accuracy
+			}
+			novosPontos = append(novosPontos, ponto)
+		}
+		update["$push"] = bson.M{"trajetoria": bson.M{"$each": novosPontos}}
+	}
+
+	// Atualizar área de cobertura se fornecida
+	if areaCobertura, ok := input["areaCobertura"].(float64); ok {
+		update["$set"].(bson.M)["area_cobertura"] = areaCobertura
+	}
+
+	// Atualizar distância percorrida se fornecida
+	if distanciaPercorrida, ok := input["distanciaPercorrida"].(float64); ok {
+		update["$set"].(bson.M)["distancia_percorrida"] = distanciaPercorrida
+	}
+
+	collection := r.db.Collection("geo_trajetorias")
+	_, err = collection.UpdateOne(context.TODO(), bson.M{"aplicacao_id": aplicacaoID}, update)
 	if err != nil {
 		return nil, err
 	}
 
-	// Retornar aplicação atualizada
-	return r.GetAplicacao(graphql.ResolveParams{Args: map[string]interface{}{"id": id}})
+	// Retornar geo trajetória atualizada
+	return r.GetGeoTrajetoria(graphql.ResolveParams{Args: map[string]interface{}{"aplicacaoId": aplicacaoIdStr}})
 }
 
-func (r *Resolver) DeleteAplicacao(p graphql.ResolveParams) (interface{}, error) {
-	id := p.Args["id"].(string)
-	objectID, err := primitive.ObjectIDFromHex(id)
+func (r *Resolver) DeleteGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
+	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
+	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return false, err
 	}
 
-	collection := r.db.Collection("aplicacoes")
-	result, err := collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
+	collection := r.db.Collection("geo_trajetorias")
+	result, err := collection.DeleteOne(context.TODO(), bson.M{"aplicacao_id": aplicacaoID})
 	if err != nil {
 		return false, err
 	}

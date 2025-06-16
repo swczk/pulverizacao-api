@@ -1,0 +1,125 @@
+@graphqlUrl = http://localhost:8081/graphql
+
+### Create a new geographic trajectory
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "mutation CreateGeoTrajetoria($input: GeoTrajetoriaInput!) { createGeoTrajetoria(input: $input) { aplicacaoId pontoInicial { latitude longitude timestamp altitude speed accuracy } pontoFinal { latitude longitude timestamp altitude speed accuracy } trajetoria { latitude longitude timestamp altitude speed accuracy } areaCobertura distanciaPercorrida createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "aplicacaoId": "507f1f77bcf86cd799439011",
+      "pontoInicial": {
+        "latitude": -25.4284,
+        "longitude": -49.2733,
+        "timestamp": "2025-06-16T06:00:00Z",
+        "accuracy": 3.5,
+        "altitude": 945.2,
+        "speed": 0.0
+      },
+      "pontoFinal": {
+        "latitude": -25.4310,
+        "longitude": -49.2690,
+        "timestamp": "2025-06-16T07:45:00Z",
+        "accuracy": 4.1,
+        "altitude": 952.8,
+        "speed": 12.5
+      },
+      "trajetoria": [
+        {
+          "latitude": -25.4284,
+          "longitude": -49.2733,
+          "timestamp": "2025-06-16T06:00:00Z",
+          "accuracy": 3.5,
+          "altitude": 945.2,
+          "speed": 0.0
+        },
+        {
+          "latitude": -25.4298,
+          "longitude": -49.2705,
+          "timestamp": "2025-06-16T06:30:00Z",
+          "accuracy": 3.2,
+          "altitude": 949.5,
+          "speed": 9.7
+        },
+        {
+          "latitude": -25.4310,
+          "longitude": -49.2690,
+          "timestamp": "2025-06-16T07:45:00Z",
+          "accuracy": 4.1,
+          "altitude": 952.8,
+          "speed": 12.5
+        }
+      ],
+      "areaCobertura": 5.2,
+      "distanciaPercorrida": 850.5
+    }
+  }
+}
+
+### Get geographic trajectory by application ID
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "query GetGeoTrajetoria($aplicacaoId: String!) { geoTrajetoria(aplicacaoId: $aplicacaoId) { aplicacaoId pontoInicial { latitude longitude timestamp altitude speed accuracy } pontoFinal { latitude longitude timestamp altitude speed accuracy } trajetoria { latitude longitude timestamp altitude speed accuracy } areaCobertura distanciaPercorrida createdAt updatedAt } }",
+  "variables": {
+    "aplicacaoId": "507f1f77bcf86cd799439011"
+  }
+}
+
+### Get all geographic trajectories with pagination
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "query GetGeoTrajetorias($limit: Int, $offset: Int) { geoTrajetorias(limit: $limit, offset: $offset) { aplicacaoId pontoInicial { latitude longitude timestamp } pontoFinal { latitude longitude timestamp } areaCobertura distanciaPercorrida createdAt } }",
+  "variables": {
+    "limit": 10,
+    "offset": 0
+  }
+}
+
+### Update geographic trajectory
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "mutation UpdateGeoTrajetoria($aplicacaoId: String!, $input: GeoTrajetoriaUpdateInput!) { updateGeoTrajetoria(aplicacaoId: $aplicacaoId, input: $input) { aplicacaoId pontoFinal { latitude longitude timestamp } areaCobertura distanciaPercorrida updatedAt } }",
+  "variables": {
+    "aplicacaoId": "507f1f77bcf86cd799439011",
+    "input": {
+      "pontoFinal": {
+        "latitude": -25.4315,
+        "longitude": -49.2685,
+        "timestamp": "2025-06-16T08:00:00Z",
+        "accuracy": 3.8,
+        "altitude": 955.0,
+        "speed": 8.2
+      },
+      "novosPontos": [
+        {
+          "latitude": -25.4312,
+          "longitude": -49.2687,
+          "timestamp": "2025-06-16T07:50:00Z",
+          "accuracy": 3.9,
+          "altitude": 953.5,
+          "speed": 10.1
+        }
+      ],
+      "areaCobertura": 6.1,
+      "distanciaPercorrida": 920.8
+    }
+  }
+}
+
+### Delete geographic trajectory
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "mutation DeleteGeoTrajetoria($aplicacaoId: String!) { deleteGeoTrajetoria(aplicacaoId: $aplicacaoId) }",
+  "variables": {
+    "aplicacaoId": "507f1f77bcf86cd799439011"
+  }
+}
