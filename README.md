@@ -30,22 +30,22 @@ pulverizacao-api/
 ```bash
 # Clone o repositório
 git clone <repo-url>
-cd pulverizacao-api
+cd pulveriza-nenem
 
-# Configure as variáveis de ambiente
-cp .env.example .env
+# Execute o script de desenvolvimento
+./scripts/start-dev.sh
 
-# Inicie todos os serviços
-docker-compose up -d
+# Ou manualmente
+docker compose -f compose.dev.yaml up -d
 
 # Verifique o status
-docker-compose ps
+docker compose -f compose.dev.yaml ps
 ```
 
 Serviços disponíveis:
-- **API GraphQL**: http://localhost:8080/graphql
+- **API GraphQL**: http://localhost:8081/graphql
 - **MongoDB**: localhost:27017
-- **Mongo Express**: http://localhost:8081 (admin/pass)
+- **Mongo Express**: http://localhost:8083 (admin/pass)
 
 ### Opção 2: Docker Hub
 
@@ -136,8 +136,8 @@ O projeto inclui pipeline automático de CI/CD:
 
 **Opção 1: Docker Compose**
 ```bash
-# Servidor de produção
-docker-compose -f docker-compose.yml up -d
+# Servidor de produção  
+docker compose -f compose.prod.yaml up -d
 ```
 
 **Opção 2: Kubernetes**
@@ -154,9 +154,9 @@ kubectl expose deployment pulverizacao-api \
 - Google Cloud Run
 - Azure Container Instances
 
-Uso
+## 📊 Uso
 
-Acesse GraphiQL em: `http://localhost:8080/graphql`
+Acesse GraphiQL em: `http://localhost:8081/graphql`
 
 ### Queries
 

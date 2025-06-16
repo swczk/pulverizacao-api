@@ -14,7 +14,7 @@ POST {{host}}/graphql
 Content-Type: application/json
 
 {
-  "query": "query { aplicacao(id: \"507f1f77bcf86cd799439011\") { id operador dosagem dataInicio dataFim condicaoClimatica observacoes finalizada talhao { nome areaHectares cultura } equipamento { nome modelo fabricante } tipoAplicacao { nome descricao vazaoPadrao } } }"
+  "query": "query { aplicacao(id: \"683859813a9c1c7158d861e3\") { id operador dosagem dataInicio dataFim condicaoClimatica observacoes finalizada talhao { nome areaHectares cultura } equipamento { nome modelo fabricante } tipoAplicacao { nome descricao vazaoPadrao } } }"
 }
 
 ### Criar nova aplicação
@@ -23,7 +23,7 @@ POST {{host}}/graphql
 Content-Type: application/json
 
 {
-  "query": "mutation { createAplicacao(input: { talhaoId: \"507f1f77bcf86cd799439011\" equipamentoId: \"507f1f77bcf86cd799439012\" tipoAplicacaoId: \"507f1f77bcf86cd799439013\" dataInicio: \"2025-05-28T08:30:00Z\" dosagem: 2.5 volumeAplicado: 150.0 operador: \"João Silva\" condicaoClimatica: \"Ensolarado, vento fraco\" observacoes: \"Aplicação de herbicida pós-emergente\" }) { id operador dosagem finalizada createdAt } }"
+  "query": "mutation { createAplicacao(input: { talhaoId: \"683859813a9c1c7158d861e3\" equipamentoId: \"507f1f77bcf86cd799439012\" tipoAplicacaoId: \"507f1f77bcf86cd799439013\" dataInicio: \"2025-05-28T08:30:00Z\" dosagem: 2.5 volumeAplicado: 150.0 operador: \"João Silva\" condicaoClimatica: \"Ensolarado, vento fraco\" observacoes: \"Aplicação de herbicida pós-emergente\" }) { id operador dosagem finalizada createdAt } }"
 }
 
 ### Guardar ID da aplicação criada
@@ -79,7 +79,7 @@ Content-Type: application/json
   "variables": {
     "input": {
       "talhaoId": "507f1f77bcf86cd799439011",
-      "equipamentoId": "507f1f77bcf86cd799439012", 
+      "equipamentoId": "507f1f77bcf86cd799439012",
       "tipoAplicacaoId": "507f1f77bcf86cd799439013",
       "dataInicio": "2025-05-28T14:00:00Z",
       "dosagem": 3.0,
