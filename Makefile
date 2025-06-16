@@ -98,4 +98,4 @@ health: ## Check service health
 	@echo "Checking API health..."
 	@curl -f http://localhost:8080/graphql || echo "API not responding"
 	@echo "\nChecking MongoDB health..."
-	@docker-compose exec mongodb mongosh --eval "db.adminCommand('ping')" --quiet || echo "MongoDB not responding"
+	@docker compose exec mongodb mongosh --eval "db.adminCommand('ping')" --quiet || echo "MongoDB not responding"
