@@ -3,13 +3,13 @@ pipeline {
 
 	environment {
 		DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials') // Reference the Jenkins credential ID
-		DOCKER_IMAGE_NAME = 'swczk/pulveriza-nenem-graphql-api'
+		DOCKER_IMAGE_NAME = 'swczk/spray-graphql-api'
 	}
 
 	stages {
 		stage('Checkout') {
 			steps {
-				git 'https://github.com/swczk/pulverizacao-api.git'
+				git 'https://github.com/swczk/spray-graphql-api.git'
 			}
 		}
 		stage('Build Docker Image') {
