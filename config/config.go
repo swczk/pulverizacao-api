@@ -19,7 +19,7 @@ func Load() *Config {
 
 	return &Config{
 		MongoURI:     mongoURI,
-		DatabaseName: getEnv("DATABASE_NAME", "pulverizacao"),
+		DatabaseName: getEnv("MONGO_DATABASE", "pulverizacao"),
 		Port:         getEnv("PORT", "8080"),
 	}
 }

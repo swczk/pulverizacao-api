@@ -4,15 +4,22 @@ import (
 	"context"
 	"time"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func Connect(uri string) (*mongo.Client, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	// Configurações específicas para MongoDB Atlas
+	clientOptions := options.Client().ApplyURI(uri).
+		SetMaxPoolSize(10).
+		SetMinPoolSize(1).
+		SetMaxConnIdleTime(30 * time.Second).
+		SetServerSelectionTimeout(30 * time.Second)
+
+	client, err := mongo.Connect(clientOptions)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type GeoPoint struct {
@@ -16,7 +16,7 @@ type GeoPoint struct {
 }
 
 type GeoTrajetoria struct {
-	AplicacaoID         primitive.ObjectID `json:"aplicacaoId" bson:"aplicacao_id"`
+	AplicacaoID         bson.ObjectID `json:"aplicacaoId" bson:"aplicacao_id"`
 	PontoInicial        GeoPoint           `json:"pontoInicial" bson:"ponto_inicial"`
 	PontoFinal          *GeoPoint          `json:"pontoFinal,omitempty" bson:"ponto_final,omitempty"`
 	Trajetoria          []GeoPoint         `json:"trajetoria" bson:"trajetoria"`
@@ -25,4 +25,3 @@ type GeoTrajetoria struct {
 	CreatedAt           time.Time          `json:"createdAt" bson:"created_at"`
 	UpdatedAt           time.Time          `json:"updatedAt" bson:"updated_at"`
 }
-

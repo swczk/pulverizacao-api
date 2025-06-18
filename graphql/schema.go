@@ -8,9 +8,8 @@ import (
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var (
@@ -171,7 +170,7 @@ type Resolver struct {
 
 func (r *Resolver) GetGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
 	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
-	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
+	aplicacaoID, err := bson.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +218,7 @@ func (r *Resolver) GetGeoTrajetorias(p graphql.ResolveParams) (interface{}, erro
 func (r *Resolver) CreateGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
 	input := p.Args["input"].(map[string]interface{})
 
-	aplicacaoID, err := primitive.ObjectIDFromHex(input["aplicacaoId"].(string))
+	aplicacaoID, err := bson.ObjectIDFromHex(input["aplicacaoId"].(string))
 	if err != nil {
 		return nil, err
 	}
@@ -312,7 +311,7 @@ func (r *Resolver) UpdateGeoTrajetoria(p graphql.ResolveParams) (interface{}, er
 	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
 	input := p.Args["input"].(map[string]interface{})
 
-	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
+	aplicacaoID, err := bson.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +383,7 @@ func (r *Resolver) UpdateGeoTrajetoria(p graphql.ResolveParams) (interface{}, er
 
 func (r *Resolver) DeleteGeoTrajetoria(p graphql.ResolveParams) (interface{}, error) {
 	aplicacaoIdStr := p.Args["aplicacaoId"].(string)
-	aplicacaoID, err := primitive.ObjectIDFromHex(aplicacaoIdStr)
+	aplicacaoID, err := bson.ObjectIDFromHex(aplicacaoIdStr)
 	if err != nil {
 		return false, err
 	}
