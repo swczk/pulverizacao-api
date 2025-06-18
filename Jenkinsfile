@@ -9,7 +9,7 @@ pipeline {
 	stages {
 		stage('Checkout') {
 			steps {
-				git 'https://github.com/swczk/spray-graphql-api.git'
+				git branch: 'main', url: 'https://github.com/swczk/spray-graphql-api.git'
 			}
 		}
 		stage('Build Docker Image') {
