@@ -11,7 +11,7 @@ Esta API faz parte de um sistema maior onde:
 ## Estrutura do Projeto
 
 ```
-backend-graphql/
+graphql-api/
 ├── main.go
 ├── go.mod 
 ├── Dockerfile
@@ -229,7 +229,7 @@ mutation {
 ```bash
 MONGO_URI=mongodb://localhost:27017
 DATABASE_NAME=pulverizacao
-PORT=8080
+PORT=8081
 ```
 
 ## Testes
