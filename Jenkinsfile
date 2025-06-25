@@ -26,7 +26,7 @@ pipeline {
 				script {
 					docker.withRegistry('', 'dockerhub-credentials') {
 						docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
-						docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").tag("${DOCKER_IMAGE_NAME}:latest")
+						docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").tag("latest")
 						docker.image("${DOCKER_IMAGE_NAME}:latest").push()
 					}
 				}
